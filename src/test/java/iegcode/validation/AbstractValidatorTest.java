@@ -1,9 +1,6 @@
 package iegcode.validation;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
+import jakarta.validation.*;
 import jakarta.validation.executable.ExecutableValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,11 +14,14 @@ public class AbstractValidatorTest {
 
     protected ExecutableValidator executableValidator;
 
+    protected MessageInterpolator messageInterpolator;
+
     @BeforeEach
     void setUp() {
         validatorFactory = Validation.buildDefaultValidatorFactory();
         validator = validatorFactory.getValidator();
         executableValidator = validator.forExecutables();
+        messageInterpolator = validatorFactory.getMessageInterpolator();
     }
 
     @AfterEach
