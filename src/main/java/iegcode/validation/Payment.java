@@ -1,12 +1,12 @@
 package iegcode.validation;
 
+import iegcode.validation.constraint.CheckOrderId;
 import iegcode.validation.group.CreditCardPaymentGroup;
 import iegcode.validation.group.VirtualAccountPaymentGroup;
 import iegcode.validation.payload.EmailErrorPayload;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import jakarta.validation.groups.ConvertGroup;
 import jakarta.validation.groups.Default;
 import org.hibernate.validator.constraints.LuhnCheck;
@@ -14,10 +14,8 @@ import org.hibernate.validator.constraints.Range;
 
 public class Payment {
 
-    @NotBlank(groups = {CreditCardPaymentGroup.class, VirtualAccountPaymentGroup.class},
-            message = "{order.id.notblank}")
-    @Size(groups = {CreditCardPaymentGroup.class, VirtualAccountPaymentGroup.class},
-            min = 1, max = 10, message = "{order.id.size}")
+    @CheckOrderId(groups = {CreditCardPaymentGroup.class, VirtualAccountPaymentGroup.class},
+            message = "{order.id.invalid}")
     private String orderId;
 
     @Range(groups = {CreditCardPaymentGroup.class, VirtualAccountPaymentGroup.class},
