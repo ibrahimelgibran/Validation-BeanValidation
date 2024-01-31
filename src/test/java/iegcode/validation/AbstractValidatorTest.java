@@ -1,5 +1,9 @@
 package iegcode.validation;
 
+import iegcode.validation.extractor.DataIntegerValueExecutor;
+import iegcode.validation.extractor.DataValueExtractor;
+import iegcode.validation.extractor.EntryValueExtractorKey;
+import iegcode.validation.extractor.EntryValueExtractorValue;
 import jakarta.validation.*;
 import jakarta.validation.executable.ExecutableValidator;
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +22,14 @@ public class AbstractValidatorTest {
 
     @BeforeEach
     void setUp() {
-        validatorFactory = Validation.buildDefaultValidatorFactory();
+       // validatorFactory = Validation.buildDefaultValidatorFactory();
+        // registerasikan value extractornya
+        validatorFactory = Validation.byDefaultProvider().configure()
+                .addValueExtractor(new DataValueExtractor())
+                .addValueExtractor(new EntryValueExtractorKey())
+                .addValueExtractor(new EntryValueExtractorValue())
+                .addValueExtractor(new DataIntegerValueExecutor())
+                .buildValidatorFactory();
         validator = validatorFactory.getValidator();
         executableValidator = validator.forExecutables();
         messageInterpolator = validatorFactory.getMessageInterpolator();
@@ -35,6 +46,12 @@ public class AbstractValidatorTest {
             System.out.println(violation.getPropertyPath());
             System.out.println(violation.getMessage());
             System.out.println("=======");
+        }
+    }
+    void validateException(Object o){
+        Set<ConstraintViolation<Object>> violations = validator.validate(o);
+        if (!violations.isEmpty()){
+            throw new ConstraintViolationException(violations);
         }
     }
 
